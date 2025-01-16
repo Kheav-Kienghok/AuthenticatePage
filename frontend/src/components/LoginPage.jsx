@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import "../css/LoginPage.css"
+import { useNavigate, Link } from "react-router-dom";
+import styles from "../css/LoginPage.module.css";
 
 function LoginPage() {
 
@@ -59,13 +59,14 @@ function LoginPage() {
     };
 
     return (
-        <div className="wrapper">
+        <div className={styles.wrapper}>
 
             <form onSubmit={handleSubmit}>
                 <h1>Login</h1>
 
-                <div className="input-box">
+                <div className={styles.inputBox}>
                     <input
+                        className={styles.usernameInput}
                         placeholder="Username" 
                         type="text"
                         value={username}
@@ -76,7 +77,7 @@ function LoginPage() {
                     <i className='bx bxs-user'></i>
                 </div>
 
-                <div className="input-box">
+                <div className={styles.inputBox}>
                     <input
                         placeholder="Password"
                         type="password"
@@ -88,19 +89,19 @@ function LoginPage() {
                     <i className='bx bxs-lock' ></i>
                 </div>
 
-                <div className="remember-forgot">
-                    <label for="">
-                        <input type="checkbox" />Remember Me
+                <div className={styles.rememberForgot}>
+                    <label htmlFor="rememberMe">
+                        <input type="checkbox" name="rememberMe" />Remember Me
                     </label>
                     <a href="#">Forgot Password?</a>
                 </div>
 
-                <button type="submit" disabled={loading} className="btn">
+                <button type="submit" disabled={loading} className={styles.btn}>
                     {loading ? "Logging in..." : "Login"}
                 </button>
 
-                <div className="register-link">
-                    <p>Don't have an account? <a href="#">Register</a></p>
+                <div className={styles.registerLink}>
+                    <p>Don't have an account? <Link to="/register" className={styles.registerPageLink}>Register</Link></p>
                 </div> 
             </form>
 

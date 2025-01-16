@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-// import "./VerifyEmail.css";
+import styles from "../css/VerifyEmail.module.css";
 
 const VerifyEmail = () => {
   const [otpValues, setOtpValues] = useState(["", "", "", ""]);
@@ -26,11 +26,8 @@ const VerifyEmail = () => {
       document.querySelectorAll("input")[index + 1].focus();
     }
 
-    if (updatedValues.every((val) => val !== "")) {
-      setIsButtonActive(true);
-    } else {
-      setIsButtonActive(false);
-    }
+    // Check if all inputs are filled to activate the button
+    setIsButtonActive(updatedValues.every((val) => val !== ""));
   };
 
   const handleBackspace = (event, index) => {
@@ -46,15 +43,15 @@ const VerifyEmail = () => {
   };
 
   return (
-    <div className="containers">
+    <div className={styles.containers}>
       <header>
         <i className="bx bxs-check-shield"></i>
       </header>
 
       <h4>Enter OTP Code</h4>
 
-      <form action="#">
-        <div className="input-field">
+      <form>
+        <div className={styles.inputField}>
           {otpValues.map((value, index) => (
             <input
               key={index}
@@ -67,7 +64,7 @@ const VerifyEmail = () => {
           ))}
         </div>
 
-        <button disabled={!isButtonActive} className={isButtonActive ? "active" : ""}>
+        <button disabled={!isButtonActive} className={isButtonActive ? styles.active : ""}>
           Verify OTP
         </button>
 

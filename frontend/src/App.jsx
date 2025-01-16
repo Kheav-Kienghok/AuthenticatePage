@@ -3,7 +3,7 @@ import ProtectedPage from "./components/Protected";
 import LoginPage from "./components/LoginPage";
 import RegisterPage from "./components/RegisterPage";
 import VerifyEmail from "./components/VerifyEmail";
-import "./css/global.css";
+import "./css/App.css";
 
 function App() {
   
