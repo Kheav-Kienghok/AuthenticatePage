@@ -52,9 +52,6 @@ const RegisterPage = () => {
 
         setLoading(false);
 
-        console.log(JSON.stringify(userInfo));
-        console.log(response);
-
         if (response.ok) {
             navigate("/");
         } else {

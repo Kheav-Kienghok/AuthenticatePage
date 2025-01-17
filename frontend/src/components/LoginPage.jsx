@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import FadeLoader from "react-spinners/FadeLoader";
 import styles from "../css/LoginPage.module.css";
 
 function LoginPage() {
@@ -8,6 +9,7 @@ function LoginPage() {
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
+    const [shake, setShake] = useState(false); 
 
     const navigate = useNavigate();
 
@@ -22,6 +24,12 @@ function LoginPage() {
         }
         setError("");
         return true;
+    };
+
+    const triggerError = (message) => {
+        setError(message);
+        setShake(true); // Trigger the shake animation
+        setTimeout(() => setShake(false), 500); // Remove the class after the animation
     };
 
     const handleSubmit = async (event) => {
@@ -50,11 +58,15 @@ function LoginPage() {
                 navigate("/protected");
             } else {
                 const errorData = await response.json();
-                setError(errorData.detail || "Authentication failed!");
+                triggerError(errorData.detail || "Authentication failed!");
+                // setError(errorData.detail || "Authentication failed!");
             }
         } catch (error) {
             setLoading(false);
-            setError("An error occurred. Please try again later.");
+            triggerError("An error occurred. Please try again later.");
+            // setError("An error occurred. Please try again later.");
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -96,9 +108,30 @@ function LoginPage() {
                     <a href="#">Forgot Password?</a>
                 </div>
 
-                <button type="submit" disabled={loading} className={styles.btn}>
-                    {loading ? "Logging in..." : "Login"}
-                </button>
+                <div className={styles.loginContainer}>
+                    <button
+                        type="button"
+                        disabled={loading}
+                        onClick={handleSubmit}
+                        className={`${styles.btn} ${loading ? styles.loading : ""} ${error ? styles.shake : ""}`}
+                    >
+                        {loading ? (
+                            <>
+                                <FadeLoader 
+                                    size={10} 
+                                    color={"#ffffff"} 
+                                    loading={loading} 
+                                    className={styles.spinner} 
+                                /> 
+                                Login....
+                            </>
+                            ) : (
+                            "Login"
+                            )}
+                    </button>
+                    
+                    {error && <p className={styles.errorMessage}>Invalid credentials, please try again.</p>}
+                </div>
 
                 <div className={styles.registerLink}>
                     <p>Don't have an account? <Link to="/register" className={styles.registerPageLink}>Register</Link></p>

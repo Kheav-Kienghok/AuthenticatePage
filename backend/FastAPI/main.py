@@ -44,17 +44,21 @@ def get_user_by_username(db: Session, username: str):
 
 def create_user(db: Session, user: RegisterUser):
 
-    hashed_password = pwd_context.hash(user.password)
-    db_user = User(
-        username=user.username,
-        email=user.email,
-        hashed_password=hashed_password 
-    )
-    db.add(db_user)
-    db.commit()
+    try:
+        hashed_password = pwd_context.hash(user.password)
+        db_user = User(
+            username=user.username,
+            email=user.email,
+            hashed_password=hashed_password 
+        )
+        db.add(db_user)
+        db.commit()
 
-    return "Successful" 
+        return "Successful" 
+    except Exception as e:
+        db.rollback()
 
+        raise HTTPException(status_code=400, detail=f"An error occurred: {str(e)}")
 
 @app.post("/register")
 def register_user(user: RegisterUser, db: Session = Depends(get_db)):
