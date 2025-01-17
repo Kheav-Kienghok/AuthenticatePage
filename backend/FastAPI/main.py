@@ -4,12 +4,17 @@ from jose import JWTError, jwt
 from sqlalchemy.orm import Session
 from datetime import datetime, timedelta, timezone
 from passlib.context import CryptContext
-from models import User
-from database import SessionLocal
-from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
+from models import User
+from database import get_db
+from schemas import RegisterUser
 
-app = FastAPI()
+
+# Your JWT secret and algorithm
+SECRET_KEY = "your_secret_key"
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 30
+
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
@@ -17,6 +22,9 @@ origins = [
     "http://localhost:5173",        # Adjust the port if the frontend runs on a different one
     "http://mydomain.com"
 ]
+
+app = FastAPI()
+
 
 app.add_middleware(
     CORSMiddleware,
@@ -27,43 +35,35 @@ app.add_middleware(
 )
 
 
-# Dependency
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
-
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
-
-# Your JWT secret and algorithm
-SECRET_KEY = "your_secret_key"
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
-
-class UserCreate(BaseModel):
-    username: str
-    password: str
 
 
 def get_user_by_username(db: Session, username: str):
     return db.query(User).filter(User.username == username).first()
 
-def create_user(db: Session, user: UserCreate):
+
+def create_user(db: Session, user: RegisterUser):
+
     hashed_password = pwd_context.hash(user.password)
-    db_user = User(username=user.username, hashed_password=hashed_password)
+    db_user = User(
+        username=user.username,
+        email=user.email,
+        hashed_password=hashed_password 
+    )
     db.add(db_user)
     db.commit()
-    return "complete"
+
+    return "Successful" 
+
 
 @app.post("/register")
-def register_user(user: UserCreate, db: Session = Depends(get_db)):
+def register_user(user: RegisterUser, db: Session = Depends(get_db)):
+
+    # Check if the username already exists
     db_user = get_user_by_username(db, username=user.username)
     if db_user:
         raise HTTPException(status_code=400, detail="Username already registered")
+    
     return create_user(db=db, user=user)
 
 
