@@ -2,6 +2,9 @@ import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 function ProtectedPage() {
+
+  const apiUrl = import.meta.env.VITE_API_URL;
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -9,7 +12,7 @@ function ProtectedPage() {
       const token = localStorage.getItem("token");
 
       try {
-        const response = await fetch(`http://localhost:8000/verify-token/${token}`);
+        const response = await fetch(`${apiUrl}/verify-token/${token}`);
 
         if (!response.ok) {
           throw new Error("Token verification failed!!");

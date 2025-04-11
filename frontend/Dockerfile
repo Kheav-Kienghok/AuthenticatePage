@@ -1,5 +1,5 @@
-# Use an official Node.js image as the base image
-FROM node:23-alpine3.2
+# Use an official Node.js image with Alpine for a smaller image
+FROM node:22-alpine
 
 # Set the working directory inside the container
 WORKDIR /frontend
@@ -16,5 +16,5 @@ COPY . .
 # Expose the port the app runs on
 EXPOSE 3000
 
-# Start the application
-CMD ["npm", "start", "dev"]
+# Start the Vite development server
+CMD ["npm", "run", "dev", "--", "--host"]

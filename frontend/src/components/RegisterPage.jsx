@@ -4,6 +4,8 @@ import React, { useState } from "react";
 
 const RegisterPage = () => {
 
+  const apiUrl = import.meta.env.VITE_API_URL;
+
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -42,7 +44,7 @@ const RegisterPage = () => {
     const userInfo = { username, email, password, confirm_password };
 
     try {
-        const response = await fetch("http://localhost:8000/register", {
+        const response = await fetch(`${apiUrl}/register`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

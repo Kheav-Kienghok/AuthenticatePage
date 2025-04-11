@@ -1,15 +1,46 @@
-FROM python:3.14.0a7-bullseye
+# ───────────────────────────────────────────────────────────────
+# Stage 1: Build environment with Rust and full dependencies
+# ───────────────────────────────────────────────────────────────
+FROM 3.14.0a7-alpine3.21 AS builder
 
-WORKDIR /backend
+# Install build tools and Rust (minimal profile to avoid bloat)
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    curl \
+    && curl https://sh.rustup.rs -sSf | sh -s -- -y --profile minimal \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-COPY requirements.txt requirements.txt
+# Set Rust PATH
+ENV PATH="/root/.cargo/bin:$PATH"
 
-RUN pip install --no-cache-dir -r requirements.txt
+# Create and set working directory
+WORKDIR /app
 
+# Copy only requirements first for caching
+COPY requirements.txt .
+
+# Install Python dependencies (including Rust-built ones)
+RUN /bin/bash -c ". $HOME/.cargo/env && pip install --upgrade pip && pip install --prefix=/install -r requirements.txt"
+
+# Copy application code (optional in this stage if dependencies are enough)
+COPY ./FastAPI .
+
+# ───────────────────────────────────────────────────────────────
+# Stage 2: Final image — clean and minimal
+# ───────────────────────────────────────────────────────────────
+FROM 3.14.0a7-alpine3.21:3.11-slim
+
+# Copy installed Python packages from builder
+COPY --from=builder /install /usr/local
+
+# Set working directory
+WORKDIR /app
+
+# Copy the app source code
 COPY . .
 
-# Expose the port the app runs on
+# Expose the port (adjust if needed)
 EXPOSE 8000
 
-# Run the application
+# Run the app with Uvicorn
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]

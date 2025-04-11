@@ -5,6 +5,8 @@ import styles from "../css/LoginPage.module.css";
 
 function LoginPage() {
 
+    const apiUrl = import.meta.env.VITE_API_URL;
+
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
@@ -42,7 +44,7 @@ function LoginPage() {
         formDetails.append("password", password);
 
         try {
-            const response = await fetch("http://localhost:8000/token", {
+            const response = await fetch(`${apiUrl}/token`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded",
