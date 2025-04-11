@@ -111,23 +111,30 @@ function LoginPage() {
                 <div className={styles.loginContainer}>
                     <button
                         type="button"
-                        disabled={loading}
+        
                         onClick={handleSubmit}
                         className={`${styles.btn} ${loading ? styles.loading : ""} ${error ? styles.shake : ""}`}
                     >
                         {loading ? (
-                            <>
+                            <div className={styles.loaderWrapper}>
                                 <FadeLoader 
-                                    size={10} 
-                                    color={"#ffffff"} 
-                                    loading={loading} 
-                                    className={styles.spinner} 
-                                /> 
-                                Login....
-                            </>
-                            ) : (
+                                    height={3}
+                                    width={2}
+                                    radius={2}
+                                    margin={-4}
+                                    margin-right={2}
+                                    color={"black"} 
+                                    loading={loading}
+                                />
+                                <span
+                                    style={{ marginBottom: "19px", color: "black" }}
+                                >
+                                    Logging In ...
+                                </span>
+                            </div>
+                        ) : (
                             "Login"
-                            )}
+                        )}
                     </button>
                     
                     {error && <p className={styles.errorMessage}>Invalid credentials, please try again.</p>}

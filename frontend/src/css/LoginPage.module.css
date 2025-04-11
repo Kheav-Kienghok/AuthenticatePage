@@ -108,6 +108,18 @@ form {
     pointer-events: visible;
 }
 
+.loaderWrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    bottom: 8%;
+    left: 50%;
+    gap: 8px;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+}
+
 .btn:hover {
     background-color: gainsboro;
 }
