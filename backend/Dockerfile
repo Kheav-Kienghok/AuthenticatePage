@@ -1,7 +1,7 @@
 # ───────────────────────────────────────────────────────────────
 # Stage 1: Build environment with Rust and full dependencies
 # ───────────────────────────────────────────────────────────────
-FROM 3.14.0a7-alpine3.21 AS builder
+FROM python:3.11-slim AS builder
 
 # Install build tools and Rust (minimal profile to avoid bloat)
 RUN apt-get update && apt-get install -y \
@@ -23,12 +23,12 @@ COPY requirements.txt .
 RUN /bin/bash -c ". $HOME/.cargo/env && pip install --upgrade pip && pip install --prefix=/install -r requirements.txt"
 
 # Copy application code (optional in this stage if dependencies are enough)
-COPY ./FastAPI .
+COPY . .
 
 # ───────────────────────────────────────────────────────────────
 # Stage 2: Final image — clean and minimal
 # ───────────────────────────────────────────────────────────────
-FROM 3.14.0a7-alpine3.21:3.11-slim
+FROM python:3.11-slim
 
 # Copy installed Python packages from builder
 COPY --from=builder /install /usr/local
@@ -37,7 +37,7 @@ COPY --from=builder /install /usr/local
 WORKDIR /app
 
 # Copy the app source code
-COPY . .
+COPY ./FastAPI .
 
 # Expose the port (adjust if needed)
 EXPOSE 8000

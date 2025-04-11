@@ -8,19 +8,23 @@ from fastapi.middleware.cors import CORSMiddleware
 from models import User
 from database import get_db
 from schemas import RegisterUser
+from dotenv import load_dotenv
+import os
 
+load_dotenv()  # take environment variables
+
+DOMAIN_URL = os.getenv("DOMAIN_URL")
 
 # Your JWT secret and algorithm
 SECRET_KEY = "your_secret_key"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
-
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 origins = [
-    "http://localhost:5173",        # Adjust the port if the frontend runs on a different one
-    "http://mydomain.com"
+    "http://localhost:3000",        # Adjust the port if the frontend runs on a different one
+    DOMAIN_URL
 ]
 
 app = FastAPI()
