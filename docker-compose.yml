@@ -2,17 +2,19 @@ version: '3.8'
 
 services:
   backend:
-    image: kienghok/backend_app:v1.1
+    image: kienghok/backend_app:v1.1.0
     container_name: backend_app
     ports:
       - "8000:8000"
+    environment:
+      - DOMAIN_URL=http://localhost:3000
     restart: always
 
   frontend:
-    image: kienghok/frontend_app:v1.1
+    image: kienghok/frontend_app:v1.1.0
     container_name: frontend_app
     ports:
       - "3000:3000"
     environment:
-      - VITE_API_URL=http://54.198.237.218:8000
+      - VITE_API_URL=http://localhost:8000
     restart: always
