@@ -29,7 +29,6 @@ origins = [
 
 app = FastAPI()
 
-
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,   # Allows all origins from the list
